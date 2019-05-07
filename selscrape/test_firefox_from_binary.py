@@ -1,27 +1,27 @@
 '''
-Created on Oct 14, 2018
+Created on May 07, 2019
 Test running a firefox binary which downloads a pdf from a page that
   has an href to the pdf
 
 example args for mac:
     --firefox_binary_path /Applications/Firefox.app/Contents/MacOS/firefox 
-    --executable_path ../../selaccess/selaccess/drivers/geckodriver_mac
+    --executable_path ../../selscrape/selscrape/drivers/geckodriver_mac
 
 example args for linux (these are the program defaults):
    --is_headless False
    
     --firefox_binary_path /root/firefox_binary/opt/firefox/firefox 
-    --executable_path ../../selaccess/selaccess/drivers/geckodriver_linux
+    --executable_path ../../selscrape/selscrape/drivers/geckodriver_linux
 
 example args for linux (If your installed version of firefox is 62.0.2 or greater):
     --firefox_binary_path /usr/bin/firefox 
-    --executable_path ../../selaccess/selaccess/drivers/geckodriver_linux
+    --executable_path ../../selscrape/selscrape/drivers/geckodriver_linux
 
 @author: bperlman1
 '''
 import os
 import time
-from selaccess import sel_access as sela
+from selscrape import sel_scrape as sela
 import argparse as ap
 
 if __name__ == '__main__':
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     df = os.path.abspath('./temp_folder')
 #     ff_bin = '/Applications/Firefox.app/Contents/MacOS/firefox'
     pp = os.path.abspath(firefox_profile_path)
-    sac = sela.SelAccess(driver_name='firefox_from_binary',executable_path=executable_path,
+    sac = sela.SelScrape(driver_name='firefox_from_binary',executable_path=executable_path,
                          firefox_binary_path=firefox_binary_path,
                          headless=is_headless,download_folder=df,profile_path=pp)
     time.sleep(2)
