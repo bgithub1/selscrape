@@ -1,0 +1,4 @@
+*.log
+temp*.csv
+*.pyc
+.ipynb_checkpoints
