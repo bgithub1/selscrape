@@ -13,7 +13,7 @@ if os.path.abspath('.')  not in sys.path:
         sys.path.append(os.path.abspath('.'))
 if os.path.abspath('../')  not in sys.path:
     if '../' not in sys.path and '..' not in sys.path:
-        sys.path.append(os.path.abspath('.'))
+        sys.path.append(os.path.abspath('../'))
         
 from selscrape import sel_scrape as sac
 import traceback
@@ -32,9 +32,9 @@ DICT_CRAIG_ACCESS_ATTRIBUTES_XPATH = {
     'paint_color':'//section[@class="userbody"]/div[@class="mapAndAttrs"]/p[@class="attrgroup"]/span[contains(text(),"paint color")]/b',
     'title_status':'//section[@class="userbody"]/div[@class="mapAndAttrs"]/p[@class="attrgroup"]/span[contains(text(),"title status")]/b',
     'transmission':'//section[@class="userbody"]/div[@class="mapAndAttrs"]/p[@class="attrgroup"]/span[contains(text(),"transmission")]/b',
-#     'days_from_posted':'//div[@class="postinginfos"]/p[contains(text(),"posted")]/time[@class="date timeago"]',
-#     'days_from_updated':'//div[@class="postinginfos"]/p[contains(text(),"updated")]/time[@class="date timeago"]',
 }
+
+
 class CraigAccess(sac.SelScrape):
     def __init__(self,
         headless=None,
@@ -139,7 +139,7 @@ class CraigAccess(sac.SelScrape):
             
             for href in [s.get_attribute("href") for s in a_link_array]:
                 try:
-                    logger.info("processing href: " + str(href))
+                    self.logger.info("processing href: " + str(href))
                     self.driver.get(href)
                     t = self.driver.find_element_by_xpath("//section[@id='postingbody']").text.encode('UTF-8')
                     try:
@@ -182,10 +182,10 @@ class CraigAccess(sac.SelScrape):
         
     #     df = pd.DataFrame({'href':href_array,'text':text_array,'geo':geo_name_array,'price':price_array,'title':title_array})
         df = pd.DataFrame(dict_df)
-        logger.info('ca_main saving csv file to ' + str(output_file_path))
+        self.logger.info('ca_main saving csv file to ' + str(output_file_path))
         df.to_csv(output_file_path,index=False)
-        logger.info("ca_main stopping %04d - %4d time %s" %(int(str(self.beg_geo_index)),int(str(self.end_geo_index)), str(datetime.datetime.now())))
-    
+        self.logger.info("ca_main stopping %04d - %4d time %s" %(int(str(self.beg_geo_index)),int(str(self.end_geo_index)), str(datetime.datetime.now())))
+        return df
 
 if __name__=='__main__':
     '''

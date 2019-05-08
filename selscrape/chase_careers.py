@@ -1,8 +1,22 @@
 '''
 Created on Jan 2, 2018
 
+Scrap the jpmorganchase careers website for job listings and organize those
+  listings into a pandas DataFrame.
+
+
 @author: bperlman1
 '''
+import sys,os
+# These additions to sys.path allow the "from selscrape import sel_scrape as sac"
+#  import to work when you are NOT using LiClipse or Eclipse's run system.
+if os.path.abspath('.')  not in sys.path:
+    if '.' not in sys.path:
+        sys.path.append(os.path.abspath('.'))
+if os.path.abspath('../')  not in sys.path:
+    if '../' not in sys.path and '..' not in sys.path:
+        sys.path.append(os.path.abspath('.'))
+
 from selscrape import  sel_scrape as sela
 import pandas as pd
 
