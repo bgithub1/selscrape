@@ -234,7 +234,7 @@ class SelScrape(object):
                 driver_error  = e
                 time.sleep(3)
         if driver_error is not None:
-            raise ValueError(driver_error + ' url: ' + url)
+            raise ValueError(str(driver_error) + ' url: ' + url)
         
     def sendkeys(self,xpath,value,elem_index=None):
         try:

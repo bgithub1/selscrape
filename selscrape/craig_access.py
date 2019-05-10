@@ -52,7 +52,28 @@ class CraigAccess(sac.SelScrape):
         titles_only=False,
         has_image=False,
         posted_today=False,
+        urls_only=False,
         logger=None):
+        '''
+        
+        :param headless: [True=Don't show browser, False=Show browser]
+        :param geos_csv_path: [If blank, use all geos. Otherwise, a path to a csv file, like ./df_geos.csv or ./df_geos_subset.csv.  See those csv files for the format.  ]
+        :param geo_locations_url: [If blank, use https://www.craigslist.org/about/sites#US, else a url that contains a list of geos]
+        :param beg_geo_index: [Default = 0.  Starting index into list of geo locations]
+        :param end_geo_index: [Default = end of geos list.  Ending index into list of geo locations]
+        :param output_folder_path: [Default = ./temp_folder.  Output of csv file of results]
+        :param make: [Like 'BMW' or 'volkswagon']
+        :param model: [Like 635 or beetle]
+        :param max_auto_year: [like 1970]
+        :param min_auto_miles: [Default 0]
+        :param max_auto_miles: [Default is None]
+        :param auto_transmission: [1 or 2. Default = 1, which is manual.  2 = automatic]
+        :param titles_only: [Default = False.  If True, only search titles]
+        :param has_image: [Default = True]
+        :param posted_today: [Default = False]
+        :param urls_only: [Default = False]
+        :param logger: [Default = None.  If None, a python logger will be created that will use anyother previous logger]
+        '''
         
         super(CraigAccess,self).__init__(headless)
         self.logger = logger if logger is not None else sac.init_root_logger('logfile.log', 'INFO')
@@ -73,6 +94,7 @@ class CraigAccess(sac.SelScrape):
         self.titles_only = '' if titles_only is False else '&srchType=T'
         self.has_image = '' if has_image is False else '&hasPic=1'
         self.posted_today = '' if posted_today is False else '&postedToday=1'
+        self.urls_only = urls_only
 
     def _sites(self):
         self.sac.driver
@@ -90,7 +112,8 @@ class CraigAccess(sac.SelScrape):
         for a_elem in a_elems:
             try:
                 hrefs.append(a_elem.get_attribute("href"))
-                geos.append(a_elem.text.encode('UTF-8'))
+#                 geos.append(a_elem.text.encode('UTF-8'))
+                geos.append(a_elem.text)
             except Exception:
                 traceback.print_exc()
                 
@@ -140,6 +163,14 @@ class CraigAccess(sac.SelScrape):
             for href in [s.get_attribute("href") for s in a_link_array]:
                 try:
                     self.logger.info("processing href: " + str(href))
+                    if self.urls_only:
+                        try:
+                            h = str(href)
+                        except:
+                            h = href.encode('UTF'-8)
+                        href_array.append(h)
+                        continue
+                        
                     self.driver.get(href)
                     t = self.driver.find_element_by_xpath("//section[@id='postingbody']").text.encode('UTF-8')
                     try:
@@ -175,12 +206,12 @@ class CraigAccess(sac.SelScrape):
                 except Exception as e:
                     traceback.print_exc()
         dict_df['href'] = href_array
-        dict_df['page_text'] = text_array
-        dict_df['geo'] = geo_name_array
-        dict_df['date_posted'] = date_posted_array
-        dict_df['date_updated'] = date_updated_array
+        if not self.urls_only:
+            dict_df['page_text'] = text_array
+            dict_df['geo'] = geo_name_array
+            dict_df['date_posted'] = date_posted_array
+            dict_df['date_updated'] = date_updated_array
         
-    #     df = pd.DataFrame({'href':href_array,'text':text_array,'geo':geo_name_array,'price':price_array,'title':title_array})
         df = pd.DataFrame(dict_df)
         self.logger.info('ca_main saving csv file to ' + str(output_file_path))
         df.to_csv(output_file_path,index=False)
