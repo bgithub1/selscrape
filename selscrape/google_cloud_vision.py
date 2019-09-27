@@ -10,7 +10,7 @@ image_path='./duval.jpg'
 request_json_out='./gcv_duval_request.json'
 response_json_out='./gcv_duval_repsonse.json'
 csv_out='./gcv_duval.csv'
-api_key='AIzaSyCUeeA0G23vE5aMAQRyfOpPrxnFK9-37FQ'
+api_key='xxxx'
 python google_cloud_vision.py ${image_path}   ${request_json_out} ${response_json_out} ${csv_out} ${api_key}
 
 @author: bperlman1
