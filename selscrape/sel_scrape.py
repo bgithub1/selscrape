@@ -205,7 +205,10 @@ class SelScrape(object):
         return driver
 
     def download_file_from_href(self,xpath,destination_path):
-        download_url = self.findxpath(xpath)['value'][0].get_attribute('href')
+        if 'http' == xpath[:4]:
+            download_url = xpath
+        else:
+            download_url = self.findxpath(xpath)['value'][0].get_attribute('href')
         all_cookies = self.driver.get_cookies()
         
         opener = ur.build_opener()

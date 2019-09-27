@@ -46,9 +46,9 @@ class CraigAccess(sac.SelScrape):
         make=None,
         model=None,
         max_auto_year=None,
-        min_auto_miles=0,
-        max_auto_miles=500000,
-        auto_transmission=1,
+        min_auto_miles=None,
+        max_auto_miles=None,
+        auto_transmission=None,
         titles_only=False,
         has_image=False,
         posted_today=False,
@@ -87,13 +87,13 @@ class CraigAccess(sac.SelScrape):
         self.output_folder_path = './temp_folder' if output_folder_path is None else output_folder_path
         self.make = 'BMW' if make is None else make
         self.model = '635' if model is None else model
-        self.max_auto_year = datetime.datetime.now().year if max_auto_year is None else max_auto_year
+        self.max_auto_year = max_auto_year # datetime.datetime.now().year if max_auto_year is None else max_auto_year
         self.min_auto_miles = min_auto_miles
         self.max_auto_miles = max_auto_miles
-        self.auto_transmission = f'auto_transmission_{auto_transmission}'
-        self.titles_only = '' if titles_only is False else '&srchType=T'
-        self.has_image = '' if has_image is False else '&hasPic=1'
-        self.posted_today = '' if posted_today is False else '&postedToday=1'
+        self.auto_transmission = f'auto_transmission_{auto_transmission}' if auto_transmission is not None else None
+        self.titles_only = None if titles_only is False else '&srchType=T'
+        self.has_image = None if has_image is False else '&hasPic=1'
+        self.posted_today = None if posted_today is False else '&postedToday=1'
         self.urls_only = urls_only
 
     def _sites(self):
@@ -142,21 +142,28 @@ class CraigAccess(sac.SelScrape):
             make_model = self.make
             if self.model is not None:
                 make_model = self.make+"+" + str(self.model)
-            d = {
-                 '_GEO':geo,
-                 '_Q':str(make_model),
-#                  '_SD':str(search_distance),
-                 '_MINOD':str(self.min_auto_miles),
-                 '_MAXOD':str(self.max_auto_miles),
-                 '_MAY': str(self.max_auto_year),
-                 '_AT': str(self.auto_transmission),
-                 '_TO':self.titles_only,
-                 '_HIM':self.has_image,
-                 '_PT':self.posted_today
-                 }
+#             d = {
+#                  '_GEO':geo,
+#                  '_Q':str(make_model),
+#                  '_MINOD':str(self.min_auto_miles),
+#                  '_MAXOD':str(self.max_auto_miles),
+#                  '_MAY': str(self.max_auto_year),
+#                  '_AT': str(self.auto_transmission),
+#                  '_TO':self.titles_only,
+#                  '_HIM':self.has_image,
+#                  '_PT':self.posted_today
+#                  }
+#             base_url = "%(_GEO)ssearch/cta?auto_make_model=%(_Q)s&sort=date&max_auto_year=%(_MAY)s&auto_transmission=%(_AT)s&min_auto_miles=%(_MINOD)s&max_auto_miles=%(_MAXOD)s"
+#             url = base_url %d
+
+            param_auto_make_model =  f'auto_make_model={str(make_model)}&'
+            param_minod = ''  if self.min_auto_miles is None else  f'min_auto_miles={str(self.min_auto_miles)}&'
+            param_maxod = ''  if self.max_auto_miles is None else  f'max_auto_miles={str(self.max_auto_miles)}&'
+            param_may = ''  if self.max_auto_year is None else  f'max_auto_year={str(self.max_auto_year)}&'
+            param_at = ''  if self.auto_transmission is None else  f'auto_transmission={str(self.auto_transmission)}&'
+            url = f"{geo}search/cta?{param_auto_make_model}{param_minod}{param_maxod}{param_may}{param_at}"
+            url = url[:-1]
             
-            base_url = "%(_GEO)ssearch/cta?auto_make_model=%(_Q)s&sort=date&max_auto_year=%(_MAY)s&auto_transmission=%(_AT)s&min_auto_miles=%(_MINOD)s&max_auto_miles=%(_MAXOD)s"
-            url = base_url %d
             self.goto(url)
             a_link_array  = self.driver.find_elements_by_xpath("//a[@class='result-title hdrlnk']")
             
