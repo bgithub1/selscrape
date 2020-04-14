@@ -3,3 +3,6 @@ temp*.csv
 *.pyc
 .ipynb_checkpoints
 *.dmg
+pfood.ipynb
+wfood.ipynb
+foodshop.ipynb

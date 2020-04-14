@@ -53,7 +53,8 @@ class CraigAccess(sac.SelScrape):
         has_image=False,
         posted_today=False,
         urls_only=False,
-        logger=None):
+        logger=None,
+        executable_path=None):
         '''
         
         :param headless: [True=Don't show browser, False=Show browser]
@@ -75,7 +76,7 @@ class CraigAccess(sac.SelScrape):
         :param logger: [Default = None.  If None, a python logger will be created that will use anyother previous logger]
         '''
         
-        super(CraigAccess,self).__init__(headless)
+        super(CraigAccess,self).__init__(headless,executable_path=executable_path)
         self.logger = logger if logger is not None else sac.init_root_logger('logfile.log', 'INFO')
         if geos_csv_path is None:
             self.df_geos = self._get_geos(geo_locations_url)
