@@ -326,6 +326,7 @@ class SelScrape(object):
     
     def curr_url(self):
         return self.driver.current_url
+
     
              
 class SelDictAccess(object):
@@ -370,4 +371,5 @@ class SelDictAccess(object):
 
     def cur_url(self):
         return self.sac.curr_url()
-    
+
+        
