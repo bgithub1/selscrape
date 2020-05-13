@@ -4,7 +4,7 @@ Created on Apr 26, 2020
 @author: bperlman1
 '''
 
-import sel_scrape as sc #@UnresolvedImport 
+from selscrape import sel_scrape as sc #@UnresolvedImport 
 import pandas as pd
 import sys
 import re
