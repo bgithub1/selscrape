@@ -21,7 +21,7 @@ import inspect
 import argparse as ap
 import os
 # from selscrape import selscrape_dummy as dum
-import selscrape_dummy as dum
+import selscrape_dummy as dum#@UnresolvedImport
 
 def get_full_folder_path_of_import(import_module_reference):
     """
